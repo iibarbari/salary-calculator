@@ -110,7 +110,8 @@ export default function SalaryForm({ className, ...props }: Props) {
           <AnimatePresence exitBeforeEnter>
             {salary.country !== null && (
               <Form.Text className="text-muted" key="currency-text">
-                {salary.currency === 'local' ? `${rates[salary.country].currency} / USD : ${1 / 0.1}` : `USD/${rates[salary.country].currency} : ${0.1}`}
+                {salary.currency === 'local' ? `Exchange rate: ${1 / 0.1} ${rates[salary.country].currency} / USD`
+                  : ` Exchange rate: ${0.1} USD/${rates[salary.country].currency}`}
               </Form.Text>
             )}
           </AnimatePresence>
