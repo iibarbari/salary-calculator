@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { RatesContext, SalaryContext } from '../../contexts';
 import { formatCurrency } from '../../helpers';
+import styles from './SummaryTable.module.css';
 
 type Props = React.PropsWithoutRef<JSX.IntrinsicElements['table']>;
 
@@ -92,7 +93,7 @@ export default function SummaryTable({ className, ...props }: Props) {
           <Table
             {...props}
             bordered
-            className={classNames('align-middle', className)}
+            className={classNames('align-middle', styles.summaryTable, className)}
             hover
             responsive
             striped
@@ -103,7 +104,7 @@ export default function SummaryTable({ className, ...props }: Props) {
 
                 <th scope="col">{rates[salary.country].currency}</th>
 
-                <th scope="col">$</th>
+                <th scope="col">USD</th>
               </tr>
             </thead>
 

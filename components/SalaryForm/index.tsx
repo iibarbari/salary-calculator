@@ -33,6 +33,12 @@ export default function SalaryForm({ className, ...props }: Props) {
             <option key={country} value={country}>{country}</option>
           ))}
         </Form.Select>
+
+        {salary.country === null ? null : (
+          <Form.Text className="text-muted">
+            {`Annual tax rate: ${rates[salary.country].taxRate}`}
+          </Form.Text>
+        )}
       </Form.Group>
 
       <Form.Group as={Col} controlId="annualSalary" lg={6} sm={8} xl={{ span: 5 }}>
@@ -40,11 +46,11 @@ export default function SalaryForm({ className, ...props }: Props) {
 
         <InputGroup className={classNames(styles.inputGroup)}>
           {salary.country === null ? (
-            <InputGroup.Text className="px-2 p-sm-4">$</InputGroup.Text>
+            <InputGroup.Text className="px-2 p-sm-4">USD</InputGroup.Text>
           ) : (
             <DropdownButton
               className="px-2 p-sm-4"
-              title={salary.currency === 'usd' ? '$' : rates[salary.country].currency}
+              title={salary.currency === 'usd' ? 'USD' : rates[salary.country].currency}
               variant="outline-dark"
             >
               <Dropdown.Item
@@ -56,7 +62,7 @@ export default function SalaryForm({ className, ...props }: Props) {
               <Dropdown.Item
                 onClick={() => setSalary({ ...salary, currency: 'usd' })}
               >
-                $
+                USD
               </Dropdown.Item>
             </DropdownButton>
           )}
@@ -90,6 +96,12 @@ export default function SalaryForm({ className, ...props }: Props) {
             </Dropdown.Item>
           </DropdownButton>
         </InputGroup>
+
+        {salary.country === null ? null : (
+          <Form.Text className="text-muted">
+            {salary.currency === 'local' ? `${rates[salary.country].currency} / USD : ${1 / 0.1}` : `USD/${rates[salary.country].currency} : ${0.1}`}
+          </Form.Text>
+        )}
       </Form.Group>
     </Form>
   );

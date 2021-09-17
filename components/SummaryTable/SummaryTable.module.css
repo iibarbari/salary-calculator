@@ -1,0 +1,14 @@
+.summaryTable {
+  td, th {
+    padding: .5rem;
+  }
+}
+
+
+@media screen and (min-width: 576px) {
+  .summaryTable {
+    td, th {
+      padding: 1.5rem;
+    }
+  }
+}
