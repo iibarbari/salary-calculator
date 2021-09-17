@@ -2,8 +2,38 @@ import 'bootswatch/dist/lux/bootstrap.min.css';
 import { AnimateSharedLayout } from 'framer-motion';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { SWRConfig } from 'swr';
 import { RatesHandler } from '../components';
 import SalaryHandler from '../components/SalaryHandler';
+
+const swrConfig = {
+  fetcher: async (endpoint: string, init?: RequestInit) => {
+    let response: Response;
+
+    try {
+      response = await fetch(endpoint, init);
+
+      if (!response.ok) {
+        const error: SWRError = {
+          json: await response.json(),
+          message: 'An error occurred while fetching the data.',
+          status: response.status,
+        };
+
+        throw error;
+      }
+
+      return response.json();
+    } catch (e) {
+      const error: SWRError = {
+        message: 'An error occurred while fetching the data.',
+      };
+
+      throw error;
+    }
+  },
+  refreshInterval: 60000,
+};
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -37,13 +67,15 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta content="#ffffff" name="theme-color" />
       </Head>
 
-      <RatesHandler>
-        <SalaryHandler>
-          <AnimateSharedLayout type="crossfade">
-            <Component {...pageProps} />
-          </AnimateSharedLayout>
-        </SalaryHandler>
-      </RatesHandler>
+      <SWRConfig value={swrConfig}>
+        <RatesHandler>
+          <SalaryHandler>
+            <AnimateSharedLayout type="crossfade">
+              <Component {...pageProps} />
+            </AnimateSharedLayout>
+          </SalaryHandler>
+        </RatesHandler>
+      </SWRConfig>
     </>
   );
 }

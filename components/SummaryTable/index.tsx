@@ -45,16 +45,15 @@ export default function SummaryTable({ className, ...props }: Props) {
   const [output, setOutput] = useState<Datum>(initialData);
 
   useEffect(() => {
-    if ([salary.amount, salary.country].includes(null)) return;
+    if ([salary.amount, salary.country, salary.exchangeRate].includes(null)) return;
 
     const annualAmount = salary.time === 'Annual' ? salary.amount : salary.amount * 12;
     const localTaxes = annualAmount * rates[salary.country].taxRate;
     const annualCost = annualAmount + localTaxes;
     const monthlyPayroll = annualCost / 12;
 
-    const usdPerLocal = 0.1;
-    const usdExchangeRate = salary.currency === 'usd' ? 1 : usdPerLocal;
-    const localExchangeRate = salary.currency === 'local' ? 1 : (1 / usdPerLocal);
+    const usdExchangeRate = salary.currency === 'usd' ? 1 : (1 / salary.exchangeRate);
+    const localExchangeRate = salary.currency === 'local' ? 1 : salary.exchangeRate;
 
     setOutput({
       ...output,

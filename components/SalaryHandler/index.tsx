@@ -7,10 +7,11 @@ type Props = {
 
 export default function SalaryHandler({ children }: Props) {
   const [salary, setSalary] = useState<SalaryType>({
-    currency: 'usd',
-    time: 'Annual',
     amount: null,
     country: null,
+    currency: 'usd',
+    exchangeRate: null,
+    time: 'Annual',
   });
 
   return (

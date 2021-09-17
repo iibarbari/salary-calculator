@@ -4,6 +4,7 @@ export type Salary = {
   amount: number | null,
   country: string | null,
   currency: CurrencyType,
+  exchangeRate: number | null,
   time: TimeFrame,
 }
 

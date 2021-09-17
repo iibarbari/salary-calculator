@@ -1,7 +1,9 @@
 import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useContext } from 'react';
+import qs from 'qs';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { Col, Dropdown, DropdownButton, Form, InputGroup, Row } from 'react-bootstrap';
+import useSWR from 'swr';
 import { RatesContext, SalaryContext } from '../../contexts';
 import styles from './SalaryForm.module.css';
 
@@ -10,6 +12,23 @@ type Props = React.PropsWithoutRef<JSX.IntrinsicElements['form']>;
 export default function SalaryForm({ className, ...props }: Props) {
   const { rates } = useContext(RatesContext);
   const { salary, setSalary } = useContext(SalaryContext);
+
+  const query = useMemo<string | null>(() => {
+    if (salary.country === null) return null;
+
+    return qs.stringify({ base: 'USD', symbols: rates[salary.country].currency });
+  }, [salary.country]);
+
+  const { data: exchangeRate } = useSWR<Exchange>(query === null ? null : `https://api.exchangerate.host/latest?${query}`);
+
+  useEffect(() => {
+    if (exchangeRate === undefined || exchangeRate == null) return;
+
+    setSalary({
+      ...salary,
+      exchangeRate: exchangeRate.rates[rates[salary.country].currency],
+    });
+  }, [exchangeRate]);
 
   return (
     <motion.div layout="position">
@@ -108,10 +127,10 @@ export default function SalaryForm({ className, ...props }: Props) {
           </InputGroup>
 
           <AnimatePresence exitBeforeEnter>
-            {salary.country !== null && (
+            {(salary.country !== null && salary.exchangeRate !== null) && (
               <Form.Text className="text-muted" key="currency-text">
-                {salary.currency === 'local' ? `Exchange rate: ${1 / 0.1} ${rates[salary.country].currency} / USD`
-                  : ` Exchange rate: ${0.1} USD/${rates[salary.country].currency}`}
+                {salary.currency === 'local' ? `Exchange rate: ${Math.round(salary.exchangeRate * 100) / 100} ${rates[salary.country].currency} / USD`
+                  : ` Exchange rate: ${Math.round((1 / salary.exchangeRate) * 100) / 100} USD/${rates[salary.country].currency}`}
               </Form.Text>
             )}
           </AnimatePresence>
