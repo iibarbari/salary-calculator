@@ -1,6 +1,8 @@
+import classNames from 'classnames';
 import React, { useContext } from 'react';
 import { Col, Dropdown, DropdownButton, Form, InputGroup, Row } from 'react-bootstrap';
 import { RatesContext, SalaryContext } from '../../contexts';
+import styles from './SalaryForm.module.css';
 
 type Props = React.PropsWithoutRef<JSX.IntrinsicElements['form']>;
 
@@ -9,87 +11,86 @@ export default function SalaryForm({ className, ...props }: Props) {
   const { salary, setSalary } = useContext(SalaryContext);
 
   return (
-    <Form {...props} className={className} onSubmit={(e) => e.preventDefault()}>
-      <fieldset>
-        <Row>
-          <Form.Group as={Col} controlId="contr" sm={4} xl={{ offset: 2, span: 3 }}>
-            <Form.Label>Country</Form.Label>
-            <Form.Select
-              as="select"
-              name="country"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSalary({
-                ...salary,
-                [e.target.name]: e.target.value,
-              })}
-              placeholder="Select Country"
-              size="lg"
-              value={salary.country || ''}
+    <Form {...props} as={Row} className={classNames(styles.salaryForm, className)} onSubmit={(e) => e.preventDefault()}>
+      <Form.Group as={Col} controlId="contr" sm={4} xl={{ offset: 2, span: 3 }}>
+        <Form.Label>Country</Form.Label>
+        <Form.Select
+          as="select"
+          className="px-3 p-sm-4"
+          name="country"
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSalary({
+            ...salary,
+            [e.target.name]: e.target.value,
+          })}
+          placeholder="Select Country"
+          value={salary.country || ''}
+        >
+          {salary.country === null && (
+            <option aria-label="country" disabled value="" />
+          )}
+
+          {Object.keys(rates).map((country) => (
+            <option key={country} value={country}>{country}</option>
+          ))}
+        </Form.Select>
+      </Form.Group>
+
+      <Form.Group as={Col} controlId="annualSalary" lg={6} sm={8} xl={{ span: 5 }}>
+        <Form.Label>Salary</Form.Label>
+
+        <InputGroup className={classNames(styles.inputGroup)}>
+          {salary.country === null ? (
+            <InputGroup.Text className="px-2 p-sm-4">$</InputGroup.Text>
+          ) : (
+            <DropdownButton
+              className="px-2 p-sm-4"
+              title={salary.currency === 'usd' ? '$' : rates[salary.country].currency}
+              variant="outline-dark"
             >
-              {salary.country === null && (
-                <option aria-label="country" disabled value="" />
-              )}
-
-              {Object.keys(rates).map((country) => (
-                <option key={country} value={country}>{country}</option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-
-          <Form.Group as={Col} controlId="annualSalary" lg={6} sm={8} xl={{ span: 5 }}>
-            <Form.Label>Salary</Form.Label>
-
-            <InputGroup className="mb-3">
-              {salary.country === null ? (
-                <InputGroup.Text>$</InputGroup.Text>
-              ) : (
-                <DropdownButton
-                  title={salary.currency === 'usd' ? '$' : rates[salary.country].currency}
-                >
-                  <Dropdown.Item
-                    onClick={() => setSalary({ ...salary, currency: 'local' })}
-                  >
-                    {rates[salary.country].currency}
-                  </Dropdown.Item>
-
-                  <Dropdown.Item
-                    onClick={() => setSalary({ ...salary, currency: 'usd' })}
-                  >
-                    $
-                  </Dropdown.Item>
-                </DropdownButton>
-              )}
-
-              <Form.Control
-                name="amount"
-                onChange={(e) => setSalary({
-                  ...salary,
-                  amount: Number(e.target.value),
-                })}
-                placeholder="Amount"
-                size="lg"
-                type="number"
-                value={salary.amount || ''}
-              />
-
-              <DropdownButton
-                title={salary.time}
+              <Dropdown.Item
+                onClick={() => setSalary({ ...salary, currency: 'local' })}
               >
-                <Dropdown.Item
-                  onClick={() => setSalary({ ...salary, time: 'Annual' })}
-                >
-                  Annual
-                </Dropdown.Item>
+                {rates[salary.country].currency}
+              </Dropdown.Item>
 
-                <Dropdown.Item
-                  onClick={() => setSalary({ ...salary, time: 'Monthly' })}
-                >
-                  Monthly
-                </Dropdown.Item>
-              </DropdownButton>
-            </InputGroup>
-          </Form.Group>
-        </Row>
-      </fieldset>
+              <Dropdown.Item
+                onClick={() => setSalary({ ...salary, currency: 'usd' })}
+              >
+                $
+              </Dropdown.Item>
+            </DropdownButton>
+          )}
+
+          <Form.Control
+            className="px-3 p-sm-4"
+            name="amount"
+            onChange={(e) => setSalary({
+              ...salary,
+              amount: Number(e.target.value),
+            })}
+            placeholder="Amount"
+            type="number"
+            value={salary.amount || ''}
+          />
+
+          <DropdownButton
+            title={salary.time}
+            variant="outline-dark"
+          >
+            <Dropdown.Item
+              onClick={() => setSalary({ ...salary, time: 'Annual' })}
+            >
+              Annual
+            </Dropdown.Item>
+
+            <Dropdown.Item
+              onClick={() => setSalary({ ...salary, time: 'Monthly' })}
+            >
+              Monthly
+            </Dropdown.Item>
+          </DropdownButton>
+        </InputGroup>
+      </Form.Group>
     </Form>
   );
 }
