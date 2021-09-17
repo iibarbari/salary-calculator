@@ -25,7 +25,9 @@ export default function SalaryForm({ className, ...props }: Props) {
               size="lg"
               value={salary.country || ''}
             >
-              <option aria-label="initial country" />
+              {salary.country === null && (
+                <option aria-label="country" disabled value="" />
+              )}
 
               {Object.keys(rates).map((country) => (
                 <option key={country} value={country}>{country}</option>

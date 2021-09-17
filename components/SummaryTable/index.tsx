@@ -51,27 +51,31 @@ export default function SummaryTable({ className, ...props }: Props) {
     const annualCost = annualAmount + localTaxes;
     const monthlyPayroll = annualCost / 12;
 
+    const usdPerLocal = 0.1;
+    const usdExchangeRate = salary.currency === 'usd' ? 1 : usdPerLocal;
+    const localExchangeRate = salary.currency === 'local' ? 1 : (1 / usdPerLocal);
+
     setOutput({
       ...output,
       annualSummary: {
         ...output.annualSummary,
-        local: annualAmount,
-        usd: annualAmount,
+        local: annualAmount * localExchangeRate,
+        usd: annualAmount * usdExchangeRate,
       },
       localTaxes: {
         ...output.localTaxes,
-        local: localTaxes,
-        usd: localTaxes,
+        local: localTaxes * localExchangeRate,
+        usd: localTaxes * usdExchangeRate,
       },
       annualCost: {
         ...output.annualCost,
-        local: annualCost,
-        usd: annualCost,
+        local: annualCost * localExchangeRate,
+        usd: annualCost * usdExchangeRate,
       },
       monthlyPayroll: {
         ...output.monthlyPayroll,
-        local: monthlyPayroll,
-        usd: monthlyPayroll,
+        local: monthlyPayroll * localExchangeRate,
+        usd: monthlyPayroll * usdExchangeRate,
       },
     });
   }, [salary]);
