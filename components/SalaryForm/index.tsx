@@ -9,7 +9,7 @@ export default function SalaryForm({ className, ...props }: Props) {
   const { salary, setSalary } = useContext(SalaryContext);
 
   return (
-    <Form {...props} className={className}>
+    <Form {...props} className={className} onSubmit={(e) => e.preventDefault()}>
       <fieldset>
         <Row>
           <Form.Group as={Col} controlId="contr" sm={4} xl={{ offset: 2, span: 3 }}>
