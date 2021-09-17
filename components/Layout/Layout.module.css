@@ -4,9 +4,19 @@
 
   flex: 1;
 
-  margin-bottom: 24px;
+  padding-bottom: 24px;
 
-  main {
+  width: 100vw;
+  min-height: 100vh;
+
+  .main {
+    display: flex;
+
+    flex-direction: column;
+
     flex: 1;
+
+    justify-content: center;
   }
 }
+
