@@ -7,7 +7,7 @@ export default function Header() {
     <Navbar bg="light">
       <Container>
         <Link href="/" passHref>
-          <Navbar.Brand>Calculator</Navbar.Brand>
+          <Navbar.Brand>salarie</Navbar.Brand>
         </Link>
       </Container>
     </Navbar>
